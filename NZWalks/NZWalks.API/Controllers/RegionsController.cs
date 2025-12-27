@@ -13,7 +13,7 @@ namespace NZWalks.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    
     public class RegionsController : ControllerBase
     {
         private NZWAlksDBContext dbContext;
@@ -30,6 +30,7 @@ namespace NZWalks.API.Controllers
         [HttpPost]
         //Custom validator
         [ValidateModel]
+        [Authorize(Roles = "Writer")]
         public async Task<IActionResult> AddRegion([FromBody] AddRegionDto addRegionRequestDto)
         {
            if (addRegionRequestDto == null)
@@ -54,6 +55,7 @@ namespace NZWalks.API.Controllers
 
         //api/regions?filterOn=ColumnName&filterValue=ColumnValue
         [HttpGet]
+        [Authorize(Roles = "Reader")]
         public async Task<IActionResult> GetAllRegions([FromQuery] string? filterOn, [FromQuery] string? filterValue,
                                                         [FromQuery] string? sortBy, [FromQuery] bool? isAscending = true,
                                                         [FromQuery] int pageNumber = 1, [FromQuery] int pageSize =2)
@@ -73,6 +75,7 @@ namespace NZWalks.API.Controllers
         /////swagger. postman returning wrong result. returing everything without filter
         [HttpGet ]
         [Route("{id:Guid}")]
+        [Authorize(Roles = "Reader")]
         public async Task<IActionResult> GetRegionById([FromRoute] Guid id)
         {
             //getting data in domain model
@@ -93,6 +96,7 @@ namespace NZWalks.API.Controllers
         [Route("{id:Guid}")]
         //Custom validator
         [ValidateModel]
+        [Authorize(Roles = "Writer")]
         public async Task<IActionResult> UpdateRegion([FromRoute]Guid id, [FromBody]UpdateRegionDto updateRegionDto)
         {
             var region = mapper.Map<Region>(updateRegionDto);
@@ -111,6 +115,7 @@ namespace NZWalks.API.Controllers
 
         [HttpDelete]
         [Route("{id:Guid}")]
+        [Authorize(Roles = "Writer")]
         public async Task<IActionResult> DeleteRegion([FromRoute] Guid id)
         {
             //getting data in domain model
