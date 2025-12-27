@@ -54,7 +54,7 @@ namespace NZWalks.API.Controllers
                 var isPasswordValid = await userManager.CheckPasswordAsync(identityUser, loginRequestDto.Password);
                 if(isPasswordValid)
                 {
-                    return Ok("Login Successful");
+                    return Ok("Login Successful.");
                 }
             }
             return BadRequest("Invalid username or password");
