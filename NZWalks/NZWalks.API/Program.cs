@@ -7,6 +7,7 @@ using NZWalks.API.Data;
 using NZWalks.API.Mappings;
 using NZWalks.API.Repostitories;
 using System.Text;
+using Microsoft.OpenApi.Models;
 
 
 
@@ -17,7 +18,40 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+
+//Autheriraztion and authentication token is not added in Swagger UI by default
+//builder.Services.AddSwaggerGen();
+
+//Adding Autheriraztion and authentication token to Swagger UI 
+builder.Services.AddSwaggerGen(options =>
+{
+    options.AddSecurityDefinition(JwtBearerDefaults.AuthenticationScheme, new OpenApiSecurityScheme
+    {
+        Description = "JWT Authorization header using the Bearer scheme. \r\n\r\n Enter 'Bearer' [space] and then your token in the text input below.\r\n\r\nExample: \"Bearer 12345abcdef\"",
+        Name = "Authorization",
+        //input parameter is in the header
+        In = ParameterLocation.Header,
+        Type = SecuritySchemeType.ApiKey,
+        Scheme = JwtBearerDefaults.AuthenticationScheme // constant value for this is "Bearer"
+    });
+    options.AddSecurityRequirement(new OpenApiSecurityRequirement()
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = JwtBearerDefaults.AuthenticationScheme // constant value for this is "Bearer"
+                },
+                Scheme = "oauth2",
+                Name = JwtBearerDefaults.AuthenticationScheme,// constant value for this is "Bearer",
+                In = ParameterLocation.Header
+            },
+            new List<string>()
+        }
+    });
+});
 
 builder.Services.AddDbContext<NZWAlksDBContext>(options =>
                     options.UseSqlServer(builder.Configuration.GetConnectionString("NZWalksConnectionString")));
