@@ -55,10 +55,10 @@ namespace NZWalks.API.Controllers
 
         //api/regions?filterOn=ColumnName&filterValue=ColumnValue
         [HttpGet]
-        [Authorize(Roles = "Reader")]
+        [Authorize(Roles = "Reader, Writer")]
         public async Task<IActionResult> GetAllRegions([FromQuery] string? filterOn, [FromQuery] string? filterValue,
                                                         [FromQuery] string? sortBy, [FromQuery] bool? isAscending = true,
-                                                        [FromQuery] int pageNumber = 1, [FromQuery] int pageSize =2)
+                                                        [FromQuery] int pageNumber = 1, [FromQuery] int pageSize =5)
         {
             //getting data in domain model
             // var regions = await dbContext.Regions.ToListAsync();
@@ -75,7 +75,7 @@ namespace NZWalks.API.Controllers
         /////swagger. postman returning wrong result. returing everything without filter
         [HttpGet ]
         [Route("{id:Guid}")]
-        [Authorize(Roles = "Reader")]
+        [Authorize(Roles = "Reader, Writer")]
         public async Task<IActionResult> GetRegionById([FromRoute] Guid id)
         {
             //getting data in domain model
