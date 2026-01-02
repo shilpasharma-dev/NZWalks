@@ -8,17 +8,28 @@ using NZWalks.API.Mappings;
 using NZWalks.API.Repostitories;
 using System.Text;
 using Microsoft.OpenApi.Models;
+using Serilog;
+using NZWalks.API.Middlewares;
 
 
 
 var builder = WebApplication.CreateBuilder(args);
+
+//configure Serilog for logging
+var logger = new LoggerConfiguration()
+    .WriteTo.Console()
+    .WriteTo.File("Logs/NZWalksLogs.txt", rollingInterval: RollingInterval.Minute)
+    .MinimumLevel.Warning()
+    .CreateLogger();
+
+builder.Logging.ClearProviders();
+builder.Logging.AddSerilog(logger);
 
 // Add services to the container.
 builder.Services.AddControllers();
 
 //it helps to extract the url of the application eg http://localhost:8080/
 builder.Services.AddHttpContextAccessor();
-
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -119,11 +130,15 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseMiddleware<ExceptionHandlerMiddleware>();
+
+
 app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();
 
+//to get the static files from Images folder
 app.UseStaticFiles(new StaticFileOptions
 {
     FileProvider = new Microsoft.Extensions.FileProviders.PhysicalFileProvider(
@@ -134,3 +149,4 @@ app.UseStaticFiles(new StaticFileOptions
 app.MapControllers();
 
 app.Run();
+ 
