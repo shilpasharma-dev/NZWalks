@@ -1,5 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using NZWalks.UI.Models;
 using NZWalks.UI.Models.DTO;
+using System.Text.Json;
+using System.Text;
+
 
 namespace NZWalks.UI.Controllers
 {
@@ -12,7 +16,7 @@ namespace NZWalks.UI.Controllers
             this.httpClientFactory = httpClientFactory;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> ShowAllRegion()
         {
             List<RegionDto> responseRegion = new List<RegionDto>();
 
@@ -25,7 +29,7 @@ namespace NZWalks.UI.Controllers
 
                 httpResponseMessage.EnsureSuccessStatusCode();
 
-                responseRegion.AddRange(await httpResponseMessage.Content.ReadFromJsonAsync<IEnumerable<RegionDto>>());                               
+                responseRegion.AddRange(await httpResponseMessage.Content.ReadFromJsonAsync<IEnumerable<RegionDto>>());
             }
             catch (Exception)
             {
@@ -34,6 +38,48 @@ namespace NZWalks.UI.Controllers
             }
 
             return View(responseRegion);
+        }
+
+        public IActionResult AddRegion()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddRegion(AddRegionViewModel region)
+        {
+            try
+            {
+                var client = httpClientFactory.CreateClient();
+
+                var httpRequestMessage = new HttpRequestMessage()
+                {
+                    Method = HttpMethod.Post,
+                    RequestUri = new Uri("https://localhost:7279/api/regions"),
+                    Content = new StringContent(content: JsonSerializer.Serialize(region), 
+                                                encoding: System.Text.Encoding.UTF8, 
+                                                mediaType: "application/json")
+                };
+
+
+
+                var httpResponseMessage = await client.SendAsync(httpRequestMessage);
+                httpResponseMessage.EnsureSuccessStatusCode();
+
+                var response = await httpResponseMessage.Content.ReadFromJsonAsync<RegionDto>();
+
+                if(response is not null)
+                {
+                    return RedirectToAction("ShowAllRegion", "Regions");
+                }
+
+                return View();
+                
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
     }
 }
