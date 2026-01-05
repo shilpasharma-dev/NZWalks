@@ -10,7 +10,7 @@
 <h1 class="nt-3">Regions</h1>
 
 <div class="d-flex justify-content-end">
-    <a type="button" class="btn btn-warning btn-outline-primary " asp-controller="Regions" asp-action="AddRegion">Primary</a>
+    <a type="button" class="btn btn-warning btn-outline-primary " asp-controller="Regions" asp-action="AddRegion">Add A New Region</a>
 </div>
 
 
@@ -20,6 +20,7 @@
             <th>Id</th>
             <th>Code</th>
             <th>Name</th>
+            <th></th>
         </tr>
     </thead>
 
@@ -30,6 +31,7 @@
                 <td>@region.Id</td>
                 <td>@region.Code</td>
                 <td>@region.Name</td>
+                <td><a asp-controller="Regions" asp-action="EditRegion" asp-route-id="@region.Id">Edit</a></td>
             </tr>
         }
 

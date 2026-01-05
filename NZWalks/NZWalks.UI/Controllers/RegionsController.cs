@@ -56,8 +56,8 @@ namespace NZWalks.UI.Controllers
                 {
                     Method = HttpMethod.Post,
                     RequestUri = new Uri("https://localhost:7279/api/regions"),
-                    Content = new StringContent(content: JsonSerializer.Serialize(region), 
-                                                encoding: System.Text.Encoding.UTF8, 
+                    Content = new StringContent(content: JsonSerializer.Serialize(region),
+                                                encoding: System.Text.Encoding.UTF8,
                                                 mediaType: "application/json")
                 };
 
@@ -68,13 +68,64 @@ namespace NZWalks.UI.Controllers
 
                 var response = await httpResponseMessage.Content.ReadFromJsonAsync<RegionDto>();
 
-                if(response is not null)
+                if (response is not null)
                 {
                     return RedirectToAction("ShowAllRegion", "Regions");
                 }
 
                 return View();
-                
+
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> EditRegion(Guid id)
+        {
+            var client = httpClientFactory.CreateClient();
+            var httpResponse = await client.GetFromJsonAsync<RegionDto>($"https://localhost:7279/api/regions/{id.ToString()}");
+
+            if (httpResponse is not null)
+            {
+                return View(httpResponse);
+            }
+            else
+                return View(null);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> EditRegion(RegionDto region)
+        {
+            try
+            {
+                var client = httpClientFactory.CreateClient();
+                var httpRequestMessage = new HttpRequestMessage()
+                {
+                    Method = HttpMethod.Put,
+                    RequestUri = new Uri($"https://localhost:7279/api/regions/{region.Id}"),
+                    Content = new StringContent(content: JsonSerializer.Serialize(region),
+                                                encoding: System.Text.Encoding.UTF8,
+                                                mediaType: "application/json")
+                };
+
+
+
+                var httpResponseMessage = await client.SendAsync(httpRequestMessage);
+                httpResponseMessage.EnsureSuccessStatusCode();
+
+                var response = await httpResponseMessage.Content.ReadFromJsonAsync<RegionDto>();
+
+                if (response is not null)
+                {
+                    return RedirectToAction("EditRegion", "Regions");
+                }
+
+                return View();
+
+
             }
             catch (Exception)
             {
