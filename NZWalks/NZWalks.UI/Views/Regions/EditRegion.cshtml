@@ -22,13 +22,19 @@
             <label for="RegionImageUrl" class="form-label">Image URL</label>
             <input type="text" class="form-control" id="RegionImageUrl" asp-for="RegionImageUrl">
         </div>
-        <button type="submit" class="btn btn-primary">Submit</button>
 
-        <a type="button" class="btn btn-primary" asp-controller="Regions" asp-action="ShowAllRegion">Cancel</a>
+        <div class="mt-3 d-flex justify-content-between">
+
+
+            <button type="submit" class="btn btn-primary">Submit</button>
+
+            <button type="submit" class="btn btn-danger" asp-controller="Regions" asp-action="DeleteRegion">Delete</button>
+            <a type="button" class="btn btn-primary" asp-controller="Regions" asp-action="ShowAllRegion">Cancel</a>
+        </div>
     </form>
 }
 else
 {
     <h3>Region not found</h3>
-}   
+}
 

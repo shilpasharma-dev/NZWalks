@@ -132,5 +132,31 @@ namespace NZWalks.UI.Controllers
                 throw;
             }
         }
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteRegion(Guid id)
+        {
+            try
+            {
+                var client = httpClientFactory.CreateClient();
+                var httpResponseMessage = await client.DeleteAsync($"https://localhost:7279/api/regions/{id}");
+                var response = httpResponseMessage.EnsureSuccessStatusCode();
+
+                if (response is not null)
+                {
+                    return RedirectToAction("ShowAllRegion", "Regions");
+                }
+                else
+                    return View();            
+                
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+
+            return View("EditRegion");
+        }
+
     }
 }
