@@ -25,7 +25,16 @@ namespace NZWalks.UI.Controllers
                 //Get All Regions from API
                 var client = httpClientFactory.CreateClient();
 
-                var httpResponseMessage = await client.GetAsync("https://localhost:7279/api/regions");
+                //var httpResponseMessage = await client.GetAsync("https://localhost:7279/api/regions");
+
+                //Using HttpRequestMessage class
+                var httpRequestMessage = new HttpRequestMessage()
+                {
+                    Method = HttpMethod.Get,
+                    RequestUri = new Uri("https://localhost:7279/api/regions")                   
+                };
+                var httpResponseMessage = await client.SendAsync(httpRequestMessage);
+
 
                 httpResponseMessage.EnsureSuccessStatusCode();
 
@@ -57,6 +66,11 @@ namespace NZWalks.UI.Controllers
             {
                 var client = httpClientFactory.CreateClient();
 
+                //using PostAsync() method
+                //var requestContent = new StringContent(JsonSerializer.Serialize(region), Encoding.UTF8, "application/json");
+                //var httpResponseMessage = await client.PostAsync("https://localhost:7279/api/regions", requestContent);
+
+                //Using HttpRequestMessage class
                 var httpRequestMessage = new HttpRequestMessage()
                 {
                     Method = HttpMethod.Post,
@@ -65,14 +79,12 @@ namespace NZWalks.UI.Controllers
                                                 encoding: System.Text.Encoding.UTF8,
                                                 mediaType: "application/json")
                 };
+                var httpResponseMessage = await client.SendAsync(httpRequestMessage);               
 
-
-
-                var httpResponseMessage = await client.SendAsync(httpRequestMessage);
+               
                 httpResponseMessage.EnsureSuccessStatusCode();
 
                 var response = await httpResponseMessage.Content.ReadFromJsonAsync<RegionDto>();
-
                 if (response is not null)
                 {
                     return RedirectToAction("ShowAllRegion", "Regions");
@@ -91,11 +103,11 @@ namespace NZWalks.UI.Controllers
         public async Task<IActionResult> EditRegion(Guid id)
         {
             var client = httpClientFactory.CreateClient();
-            var httpResponse = await client.GetFromJsonAsync<RegionDto>($"https://localhost:7279/api/regions/{id.ToString()}");
+            var httpResponseMessage = await client.GetFromJsonAsync<RegionDto>($"https://localhost:7279/api/regions/{id.ToString()}");
 
-            if (httpResponse is not null)
+            if (httpResponseMessage is not null)
             {
-                return View(httpResponse);
+                return View(httpResponseMessage);
             }
             else
                 return View(null);
@@ -112,6 +124,12 @@ namespace NZWalks.UI.Controllers
             try
             {
                 var client = httpClientFactory.CreateClient();
+
+                //using PutAsync() method   
+                //var requestContent = new StringContent(JsonSerializer.Serialize(region), Encoding.UTF8, "application/json");
+                //var httpResponseMessage = await client.PutAsync($"https://localhost:7279/api/regions/{region.Id}", requestContent);
+
+                //Using HttpRequestMessage class
                 var httpRequestMessage = new HttpRequestMessage()
                 {
                     Method = HttpMethod.Put,
@@ -120,10 +138,8 @@ namespace NZWalks.UI.Controllers
                                                 encoding: System.Text.Encoding.UTF8,
                                                 mediaType: "application/json")
                 };
+                var httpResponseMessage = await client.SendAsync(httpRequestMessage);                
 
-
-
-                var httpResponseMessage = await client.SendAsync(httpRequestMessage);
                 httpResponseMessage.EnsureSuccessStatusCode();
 
                 var response = await httpResponseMessage.Content.ReadFromJsonAsync<RegionDto>();
@@ -163,7 +179,18 @@ namespace NZWalks.UI.Controllers
             try
             {
                 var client = httpClientFactory.CreateClient();
-                var httpResponseMessage = await client.DeleteAsync($"https://localhost:7279/api/regions/{id}");
+
+                //using DeleteAsync() method
+                //var httpResponseMessage = await client.DeleteAsync($"https://localhost:7279/api/regions/{id}");
+
+                //Using HttpRequestMessage class
+                var httpRequestMessage = new HttpRequestMessage()
+                {
+                    Method = HttpMethod.Delete,
+                    RequestUri = new Uri($"https://localhost:7279/api/regions/{id}")
+                };
+                var httpResponseMessage = await client.SendAsync(httpRequestMessage);
+
                 var response = httpResponseMessage.EnsureSuccessStatusCode();
  
                 if (response is not null)
