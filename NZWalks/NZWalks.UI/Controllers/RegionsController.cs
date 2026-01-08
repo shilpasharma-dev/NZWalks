@@ -48,6 +48,11 @@ namespace NZWalks.UI.Controllers
         [HttpPost]
         public async Task<IActionResult> AddRegion(AddRegionViewModel region)
         {
+            if(!ModelState.IsValid)
+            {
+                return View();
+            }
+
             try
             {
                 var client = httpClientFactory.CreateClient();
@@ -99,6 +104,11 @@ namespace NZWalks.UI.Controllers
         [HttpPost]
         public async Task<IActionResult> EditRegion(RegionDto region)
         {
+            if (!ModelState.IsValid)
+            {
+                return View(region);
+            }
+
             try
             {
                 var client = httpClientFactory.CreateClient();
@@ -125,23 +135,37 @@ namespace NZWalks.UI.Controllers
 
                 return View();
 
-
             }
             catch (Exception)
             {
                 throw;
             }
+
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> DeleteRegion(Guid id)
+        {
+            var client = httpClientFactory.CreateClient();
+            var httpResponse = await client.GetFromJsonAsync<RegionDto>($"https://localhost:7279/api/regions/{id.ToString()}");
+
+            if (httpResponse is not null)
+            {
+                return View(httpResponse);
+            }
+            else
+                return View(null);
         }
 
         [HttpPost]
-        public async Task<IActionResult> DeleteRegion(Guid id)
+        public async Task<IActionResult> DeleteSelectedRegion(Guid id)
         {
             try
             {
                 var client = httpClientFactory.CreateClient();
                 var httpResponseMessage = await client.DeleteAsync($"https://localhost:7279/api/regions/{id}");
                 var response = httpResponseMessage.EnsureSuccessStatusCode();
-
+ 
                 if (response is not null)
                 {
                     return RedirectToAction("ShowAllRegion", "Regions");
@@ -157,6 +181,5 @@ namespace NZWalks.UI.Controllers
 
             return View("EditRegion");
         }
-
     }
 }

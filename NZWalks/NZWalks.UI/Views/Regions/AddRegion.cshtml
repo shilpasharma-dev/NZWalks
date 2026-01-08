@@ -8,11 +8,13 @@
 <form method="post">
     <div class="mb-3">
         <label for="Code" class="form-label">Code</label>
-        <input type="text" class="form-control" id="Code" asp-for="Code">        
+        <input type="text" class="form-control" id="Code" asp-for="Code" required>      
+        <span class="text-danger" asp-validation-for="Code"></span>
     </div>
     <div class="mb-3">
         <label for="Name" class="form-label">Name</label>
-        <input type="text" class="form-control" id="Name" asp-for="Name">
+        <input type="text" class="form-control" id="Name" asp-for="Name" required>
+        <span class="text-danger" asp-validation-for="Name"></span>
     </div>
     <div class="mb-3">
         <label for="RegionImageUrl" class="form-label">Image URL</label>

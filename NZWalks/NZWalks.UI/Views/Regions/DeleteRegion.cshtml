@@ -1,7 +1,7 @@
 ﻿@model NZWalks.UI.Models.DTO.RegionDto
 
 
-<h1 class="mt-3">Edit Region</h1>
+<h1 class="mt-3">Delete Region</h1>
 
 @if (Model is not null)
 {
@@ -12,24 +12,21 @@
         </div>
         <div class="mb-3">
             <label for="Code" class="form-label">Code</label>
-            <input type="text" class="form-control" id="Code" asp-for="Code" required>
+            <input type="text" class="form-control" id="Code" asp-for="Code" readonly>
             <span class="text-danger" asp-validation-for="Code"></span>
         </div>
         <div class="mb-3">
             <label for="Name" class="form-label">Name</label>
-            <input type="text" class="form-control" id="Name" asp-for="Name" required>
+            <input type="text" class="form-control" id="Name" asp-for="Name" readonly>
             <span class="text-danger" asp-validation-for="Name"></span>
         </div>
         <div class="mb-3">
             <label for="RegionImageUrl" class="form-label">Image URL</label>
-            <input type="text" class="form-control" id="RegionImageUrl" asp-for="RegionImageUrl">
-            @* <span class="text-danger" asp-validation-for="RegionImageUrl"></span> *@
+            <input type="text" class="form-control" id="RegionImageUrl" asp-for="RegionImageUrl" readonly>
         </div>
 
         <div class="mt-3 d-flex justify-content-between">
-
-
-            <button type="submit" class="btn btn-primary">Submit</button>
+            <button type="submit" class="btn btn-primary" asp-controller="Regions" asp-action="DeleteSelectedRegion" asp-route-id="@Model.Id">Delete</button>
             <a type="button" class="btn btn-primary" asp-controller="Regions" asp-action="ShowAllRegion">Cancel</a>
         </div>
     </form>
